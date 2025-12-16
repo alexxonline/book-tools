@@ -84,5 +84,4 @@ python generate_audiobook.py path/to/input.md --out-dir audio/
 Feel free to open issues or PRs to improve scripts, add tests, or make the tools more robust.
 
 ## License
-
-This repository does not include a license file. Add one if you plan to publish or share the code publicly.
+TBD
