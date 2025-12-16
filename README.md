@@ -14,9 +14,6 @@ Utilities for preparing, translating, and generating audiobooks from book text f
 - `translate_to_spanish.py` - Translate text files into Spanish.
 - `generate_audiobook.py` - Generate short audiobooks from text using a TTS provider.
 - `generate_audiobook_long.py` - Generate audiobooks for longer texts (handles chunking and long-run jobs).
-- `out_md/` - Output markdown files (processed/translated files).
-- `downloaded_files/` - Files downloaded from storage by `download_files.py`.
-- `pdfvenv/` - Virtual environment used for running scripts (optional directory; not included in packaging).
 - `requirements.txt` - Python dependencies.
 
 ## Quickstart
@@ -77,7 +74,6 @@ python generate_audiobook.py path/to/input.md --out-dir audio/
 
 - The `download_files.py` script uses the Google Cloud Storage Python client and expects credentials to be configured via the `GOOGLE_APPLICATION_CREDENTIALS` environment variable or through default application credentials.
 - If you edit or run TTS scripts that use Google Cloud Text-to-Speech, ensure the corresponding APIs are enabled for your project and credentials have appropriate permissions.
-- The `pdfvenv/` directory is included in this repo; prefer creating a new `.venv` for local development to avoid accidentally modifying the committed environment.
 
 ## Contributing
 
