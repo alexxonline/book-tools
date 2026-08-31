@@ -1,4 +1,4 @@
-import os, base64, pathlib, re
+import os, base64, pathlib
 from itertools import count
 from mistralai import Mistral
 
@@ -23,25 +23,43 @@ resp = client.ocr.process(
 
 img_counter = count(1)  # <- stateful counter, no nonlocal/global needed
 
-def save_data_uri_image(data_uri: str, page_idx: int) -> str:
-    header, b64 = data_uri.split(",", 1)
-    ext = "png" if "png" in header.lower() else "jpg"
+def save_image(image_base64: str, image_id: str, page_idx: int) -> str:
+    """Save an OCR image and return its path relative to the Markdown file."""
+    header, separator, payload = image_base64.partition(",")
+    if not separator:
+        header = ""
+        payload = image_base64
+
+    suffix = pathlib.Path(image_id).suffix.lower()
+    if suffix in {".jpg", ".jpeg", ".png", ".gif", ".webp"}:
+        ext = suffix
+    elif "png" in header.lower():
+        ext = ".png"
+    elif "gif" in header.lower():
+        ext = ".gif"
+    elif "webp" in header.lower():
+        ext = ".webp"
+    else:
+        ext = ".jpg"
+
     n = next(img_counter)
-    fname = f"page{page_idx:03d}_{n:03d}.{ext}"
-    (images_dir / fname).write_bytes(base64.b64decode(b64))
+    fname = f"page{page_idx:03d}_{n:03d}{ext}"
+    (images_dir / fname).write_bytes(base64.b64decode(payload))
     return f"images/{fname}"
 
 md_parts = []
-pattern = r'!\[([^\]]*)\]\((data:image/[^)]+)\)'
 
 for i, page in enumerate(resp.pages, start=1):
-    def replace(m: re.Match) -> str:
-        alt = m.group(1) or ""
-        data_uri = m.group(2)
-        path = save_data_uri_image(data_uri, i)
-        return f'![{alt}]({path})'
+    page_md = page.markdown or ""
+    for image in page.images or []:
+        if not image.image_base64:
+            continue
 
-    page_md = re.sub(pattern, replace, page.markdown or "")
+        path = save_image(image.image_base64, image.id, i)
+        # Mistral places the image ID in the Markdown target, for example:
+        # ![img-0.jpeg](img-0.jpeg)
+        page_md = page_md.replace(f"]({image.id})", f"]({path})")
+
     md_parts.append(f"\n<!-- Page {i} -->\n\n{page_md.strip()}\n")
 
 out_md = OUT_DIR / (pathlib.Path(PDF_PATH).stem + ".md")
