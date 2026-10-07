@@ -1,4 +1,13 @@
-pdfvenv
-out_md
-downloaded_files
+venv/
+.venv/
+out_md/
+downloaded_files/
 .DS_Store
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+/output/*
+!/output/.gitkeep
+books

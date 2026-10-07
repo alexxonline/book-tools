@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "book-tools"
+version = "0.1.0"
+description = "Convert, prepare, translate, and narrate books"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+epub = ["markdownify>=1.2,<2", "beautifulsoup4>=4.12,<5"]
+pdf = ["mistralai>=3,<4"]
+tokens = ["tiktoken>=0.7,<1"]
+translation = ["requests>=2.31,<3"]
+cloud = ["google-cloud-storage>=2,<4", "google-cloud-texttospeech>=2,<3"]
+all = ["book-tools[epub,pdf,tokens,translation,cloud]"]
+
+[project.scripts]
+book-tools = "book_tools.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["book_tools*"]

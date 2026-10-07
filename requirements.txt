@@ -1,6 +1,1 @@
-# Dependencies for book-tools project
-mistralai
-tiktoken
-google-cloud-storage
-google-cloud-texttospeech
-requests
+.[all]
